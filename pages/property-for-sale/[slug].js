@@ -73,7 +73,7 @@ function ProductPageContainer({ productData, preview }) {
       <section
         class="xbox"
         style={{
-          background: `url(${urlFor(property.defaultProductVariant.images[0])
+          background: `url(${urlFor(property.defaultProductVariant?.images[0])
             .auto("format")
             .width(2000)
             .url()}) no-repeat 
