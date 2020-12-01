@@ -15,7 +15,7 @@ const config = {
    **/
   projectId: "ivsevnd6", // you can find this in sanity.json
   dataset: "production", // or the name you chose in step 1
-  useCdn: true, // `false` if you want to ensure fresh data
+  useCdn: false, // `false` if you want to ensure fresh data
   /**
    * Set useCdn to `false` if your application require the freshest possible
    * data always (potentially slightly slower and a bit more expensive).
