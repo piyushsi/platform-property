@@ -96,7 +96,7 @@ const Property = (props) => {
   );
 };
 
-export async function getServerSideProps({ params = {}, preview = false }) {
+export async function getStaticProps({ params = {}, preview = false }) {
   const productsData = await getClient(preview).fetch(query);
 
   return {
@@ -104,6 +104,7 @@ export async function getServerSideProps({ params = {}, preview = false }) {
       preview,
       productsData,
     },
+    revalidate: 1,
   };
 }
 
