@@ -2,7 +2,7 @@ import {
   getClient,
   usePreviewSubscription,
   urlFor,
-} from "../../Components/client";
+} from "../../../../../Components/client";
 import { groq } from "next-sanity";
 import { useRouter } from "next/router";
 import Error from "next/error";
@@ -10,8 +10,8 @@ import Link from "next/link";
 import { geolocated } from "react-geolocated";
 
 const query = `//groq
-  *[_type == "product" && defined(slug.current)]
-`;
+    *[_type == "product" && defined(slug.current)]
+  `;
 const Property = (props) => {
   const { productsData, preview } = props;
   const router = useRouter();
@@ -24,8 +24,18 @@ const Property = (props) => {
   });
   const lat = props.coords?.latitude;
   const lng = props.coords?.longitude;
-
-  console.log(lat, lng);
+  function heya() {
+    getClient(true)
+      .fetch(
+        `//groq
+          *[_type == "product" && location.lat< 40.937 && location.lat>40.737
+           && location.lng>-74.575 && location.lng<-74.375 ]
+          `,
+        {}
+      )
+      .then((res) => console.log(res));
+  }
+  console.log(preview);
   return (
     <article>
       <nav class="main-nav">
@@ -45,9 +55,7 @@ const Property = (props) => {
             </Link>
           </li>
           <li>
-            <Link href={`/nearby/${lat}/${lng}/1`}>
-              <a>nearby 10 km</a>
-            </Link>
+            <a onClick={() => heya()}>sell my house</a>
           </li>
           <li>
             <a href="#">about</a>
@@ -102,15 +110,21 @@ const Property = (props) => {
   );
 };
 
-export async function getStaticProps({ params = {}, preview = false }) {
-  const productsData = await getClient(preview).fetch(query);
-
+export async function getServerSideProps({
+  params: { lat, lng, rad },
+  preview = false,
+}) {
+  const productsData = await getClient(preview).fetch(`//groq
+  *[_type == "product" && location.lat< ${+lat + 0.09 * rad} && location.lat>${
+    +lat - 0.09 * rad
+  }
+   && location.lng>${+lng - 0.09 * rad} && location.lng<${+lng + 0.09 * rad} ]
+  `);
   return {
     props: {
       preview,
       productsData,
     },
-    revalidate: 1,
   };
 }
 
